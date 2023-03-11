@@ -4,10 +4,10 @@ module PlayerMoves
   attr_reader :row, :index
   def get_move
     # Add conditional if Player 1 put x, if Player 2 put o
-    puts "Which row? Top: 1, Middle: 2, Bottom: 3"
+    puts 'Which row? Top: 1, Middle: 2, Bottom: 3'
     @row = gets.to_i
-    puts "Which position? Left: 1, Middle: 2, Right: 3"
-    @index = (gets.to_i - 1)
+    puts 'Which position? Left: 1, Middle: 2, Right: 3'
+    @index = (gets.to_i)
     return [@row, @index]
   end
 end
@@ -17,8 +17,8 @@ class GameBoard
   attr_accessor :top_row_array, :middle_row_array, :last_row_array
   def initialize
     @@top_row_array = ['  ', '|', '  ', '|', '   ']
-    @@middle_row_array = ['  |', '  |', '   ']
-    @@bottom_row_array = ['  |', '  |', '   ']
+    @@middle_row_array = ['  ', '|', '  ', '|', '  ']
+    @@bottom_row_array = ['  ', '|', '  ', '|', '  ']
     @@divider_row_array = ['--+', '--', '+--']
   end
   def print_board
@@ -30,14 +30,13 @@ class GameBoard
   end
   def place_move(row, index)
     if row == 1
-      @@top_row_array[index] = "x "
+      @@top_row_array[index] = 'x '
     elsif row == 2
-      @@middle_row_array[index + 1] = "x "
-      p @@middle_row_array
+      @@middle_row_array[index] = 'x '
     elsif row == 3
-      @@bottom_row_array[index + 3] = "x "
+      @@bottom_row_array[index] = 'x '
     else
-      puts "Invalid entry"
+      puts 'Invalid entry'
     end
   end
 end
@@ -54,7 +53,14 @@ class Game
     get_move()
   end
   def turn_end(row, index)
-    @game_board.place_move(row, index)
+    if index == 1
+      new_index = 0
+    elsif index == 2
+      new_index = 2
+    elsif index == 3
+      new_index = 4
+    end
+    @game_board.place_move(row, new_index)
   end
 end
 
@@ -63,7 +69,8 @@ game = Game.new(board)
 (1..3).each do 
   game.print_game_board
   turn_values = game.turn_start
-  puts turn_values
+  p turn_values
   game.turn_end(turn_values[0], turn_values[1])
 end
+game.print_game_board
 
