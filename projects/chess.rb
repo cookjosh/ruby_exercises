@@ -16,7 +16,7 @@ end
 class GameBoard
   attr_accessor :top_row_array, :middle_row_array, :last_row_array
   def initialize
-    @@top_row_array = ['  |', '  |', '   ']
+    @@top_row_array = ['  ', '|', '  ', '|', '   ']
     @@middle_row_array = ['  |', '  |', '   ']
     @@bottom_row_array = ['  |', '  |', '   ']
     @@divider_row_array = ['--+', '--', '+--']
@@ -30,11 +30,12 @@ class GameBoard
   end
   def place_move(row, index)
     if row == 1
-      @@top_row_array[index] = "x"
+      @@top_row_array[index] = "x "
     elsif row == 2
-      @@middle_row_array[index] = "x"
+      @@middle_row_array[index + 1] = "x "
+      p @@middle_row_array
     elsif row == 3
-      @@bottom_row_array[index] = "x"
+      @@bottom_row_array[index + 3] = "x "
     else
       puts "Invalid entry"
     end
