@@ -27,26 +27,39 @@ end
 
 class GameBoard
   attr_accessor :top_row_array, :middle_row_array, :last_row_array
+  attr_reader :winning_horizontal_array
   def initialize
-    @@top_row_array = ['  ', '|', '  ', '|', '   ']
-    @@middle_row_array = ['  ', '|', '  ', '|', '  ']
-    @@bottom_row_array = ['  ', '|', '  ', '|', '  ']
-    @@divider_row_array = ['--+', '--', '+--']
+    @top_row_array = ['  ', '|', '  ', '|', '   ']
+    @middle_row_array = ['  ', '|', '  ', '|', '  ']
+    @bottom_row_array = ['  ', '|', '  ', '|', '  ']
+    @divider_row_array = ['--+', '--', '+--']
+    @winning_horizontal_array = [['x ', '|', 'x ', '|', 'x '], ['o ', '|', 'o ', '|', 'o ']]
   end
   def print_board
-    print "#{@@top_row_array.join}\n"
-    print "#{@@divider_row_array.join}\n"
-    print "#{@@middle_row_array.join}\n"
-    print "#{@@divider_row_array.join}\n"
-    print "#{@@bottom_row_array.join}\n\n"
+    print "#{@top_row_array.join}\n"
+    print "#{@divider_row_array.join}\n"
+    print "#{@middle_row_array.join}\n"
+    print "#{@divider_row_array.join}\n"
+    print "#{@bottom_row_array.join}\n\n"
+  end
+  def check_winner
+    [0, 2, 4].each do |i|
+      if (@top_row_array[i] == 'x ' && @middle_row_array[i] == 'x ' && @bottom_row_array[i] == 'x ') ||
+        (@top_row_array[i] == 'o ' && @middle_row_array[i] == 'o ' && @bottom_row_array[i] == 'o ')
+        return 1
+      end
+      if @winning_horizontal_array.include?(@top_row_array) || @winning_horizontal_array.include?(@middle_row_array) || @winning_horizontal_array.include?(@bottom_row_array)
+        return 1
+      end      
+    end
   end
   def place_move(row, index, symbol)
     if row == 1
-      @@top_row_array[index] = "#{symbol} "
+      @top_row_array[index] = "#{symbol} "
     elsif row == 2
-      @@middle_row_array[index] = "#{symbol} "
+      @middle_row_array[index] = "#{symbol} "
     elsif row == 3
-      @@bottom_row_array[index] = "#{symbol} "
+      @bottom_row_array[index] = "#{symbol} "
     else
       puts 'Invalid entry'
     end
@@ -81,8 +94,7 @@ class Game
   end
   def play_game
     @round = 1
-    #while game_over == false
-    while @round != 5
+    while @game_over == false
       self.print_game_board
       if @round.even? == false
         current_player = 'Player One'
@@ -95,6 +107,12 @@ class Game
       turn_array = self.turn_start
       self.turn_end(turn_array[0], turn_array[1], symbol)
       @round += 1
+      game_status = @game_board.check_winner
+      if game_status == 1
+        puts "Game Over!"
+        self.print_game_board
+        @game_over = true
+      end   
     end
   end
 end
