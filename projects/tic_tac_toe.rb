@@ -47,11 +47,20 @@ class GameBoard
       if (@top_row_array[i] == 'x ' && @middle_row_array[i] == 'x ' && @bottom_row_array[i] == 'x ') ||
         (@top_row_array[i] == 'o ' && @middle_row_array[i] == 'o ' && @bottom_row_array[i] == 'o ')
         return 1
-      end
-      if @winning_horizontal_array.include?(@top_row_array) || @winning_horizontal_array.include?(@middle_row_array) || @winning_horizontal_array.include?(@bottom_row_array)
-        return 1
-      end      
+      end    
     end
+    if (@top_row_array[0] == 'x ' && @middle_row_array[2] == 'x ' && @bottom_row_array[4] == 'x ') ||
+      (@top_row_array[0] == 'o ' && @middle_row_array[2] == 'o ' && @bottom_row_array[4] == 'o ')
+      return 1
+    end
+    if (@top_row_array[4] == 'x ' && @middle_row_array[2] == 'x ' && @bottom_row_array[0] == 'x ') ||
+      (@top_row_array[4] == 'o ' && @middle_row_array[2] == 'o ' && @bottom_row_array[0] == 'o ')
+      return 1
+    end      
+    if @winning_horizontal_array.include?(@top_row_array) || @winning_horizontal_array.include?(@middle_row_array) || @winning_horizontal_array.include?(@bottom_row_array)
+      return 1
+    end
+    
   end
   def place_move(row, index, symbol)
     if row == 1
