@@ -78,11 +78,8 @@ end
 class Game
   include PlayerMoves
   attr_accessor :game_over
-  def initialize(game_board, player_one, player_two)
+  def initialize(game_board)
     @game_board = game_board
-    @player_one = player_one
-    @player_two = player_two
-    @current_player = @player_one
     @game_over = false
   end
   def print_game_board # Unsure if this is necessary
@@ -127,8 +124,6 @@ class Game
 end
 
 board = GameBoard.new
-player_one = Player.new
-player_two = Player.new
-game = Game.new(board, player_one, player_two)
+game = Game.new(board)
 game.play_game
 
