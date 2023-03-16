@@ -1,9 +1,6 @@
-# feedback_array: red means element and index match, black just means match
+# feedback_array: white means element and index match, black just means match
 # If redoing, I'd probably build all guess/code creation/code generation into a Code module
-
-# 3/13 - Next step, if user is Mastermind, start with computer generating a secret code
-# check that guess and get feedback
-# next step, retain matches and generate remaining elements in array
+# I would also create one guess checking method
 
 class GameBoard
   attr_accessor :secret_code
