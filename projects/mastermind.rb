@@ -6,7 +6,7 @@
 # next step, retain matches and generate remaining elements in array
 
 class GameBoard
-  attr_reader :secret_code
+  attr_accessor :secret_code
   COLORS = ['red', 'blue', 'orange', 'yellow', 'green', 'purple']
   def initialize
     @secret_code = []
@@ -35,6 +35,7 @@ class Player
 end
 
 class GameFlow
+  COLORS = ['red', 'blue', 'orange', 'yellow', 'green', 'purple']
   attr_accessor :guess_array
   attr_reader :user_answer
   def initialize(game_board, player)
@@ -44,6 +45,7 @@ class GameFlow
     @feedback_array = []
     @user_answer = ''
     @index = 0
+    @correct_computer_guesses = []
   end
 
   def ask_player
@@ -64,20 +66,31 @@ class GameFlow
     end
   end
 
-  def game_play # Want to write logic of checking arrays against each other
-    # possibly remove `create_environment` func and put in this
-    # conditionals expanded to handle comparing arrays
+  def game_play
     @game_board.generate_secret_code()
-    p @game_board.secret_code
     while @feedback_array != ['white', 'white', 'white', 'white']
       @index = 0
       @feedback_array = []
       if @user_answer == 'mastermind'
+        puts 'Start turn press enter'
+        start_turn = gets
+        if @correct_computer_guesses == [nil, nil, nil, nil]
+          @game_board.generate_secret_code()
+        else
+          (0..3).each do |index|
+            if @correct_computer_guesses[index] == nil
+              @correct_computer_guesses[index] = COLORS.sample 
+            end
+          end
+          @game_board.secret_code = @correct_computer_guesses
+        end
+        puts "Computer guess: #{@game_board.secret_code}"
         check_player_code()
+        puts "Guess feedback: #{@feedback_array}"
       elsif @user_answer == 'codebreaker'
         @player.player_create_code()
         check_computer_code()
-        p @feedback_array
+        puts "Guess feedback: #{@feedback_array}"
       else
         puts 'Please enter Mastermind or Codebreaker.'
       end
@@ -88,7 +101,6 @@ class GameFlow
   def check_computer_code
     @feedback_array = []
     (@player.player_code).each do |elem|
-      p @index
       if (@game_board.secret_code.include?(elem))
         if @game_board.secret_code[@index] == elem
           @feedback_array[@index] = 'white'
@@ -109,11 +121,14 @@ class GameFlow
       if (@player.player_code.include?(elem))
         if @player.player_code[@index] == elem
           @feedback_array[@index] = 'white'
+          @correct_computer_guesses[@index] = elem
         else
           @feedback_array[@index] = 'black'
+          @correct_computer_guesses[@index] = nil
         end
       else
         @feedback_array[@index] = nil
+        @correct_computer_guesses[@index] = nil
       end
       @index += 1
     end
