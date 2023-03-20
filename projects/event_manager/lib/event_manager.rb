@@ -42,6 +42,13 @@ def save_thank_you_letter(id,form_letter)
   end
 end
 
+def clean_date_time(registration_info)
+  date_format = '%m/%d/%y'
+  registration_array = registration_info.split
+  registration_date = Date.strptime(registration_array[0], date_format).to_s
+  registration_time = registration_array[1]
+end
+
 puts 'EventManager initialized.'
 
 contents = CSV.open(
