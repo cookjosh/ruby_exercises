@@ -47,6 +47,23 @@ def clean_date_time(registration_info)
   registration_array = registration_info.split
   registration_date = Date.strptime(registration_array[0], date_format).to_s
   registration_time = registration_array[1]
+  registration_array = [registration_date, registration_time]
+  return registration_array
+end
+
+def max_registrations(registration_information)
+  hour_array = []
+  day_array = []
+  registration_information.each do |date_time_stamp|
+    time_obj = Time.parse(date_time_stamp[1])
+    date_obj = Date.strptime(date_time_stamp[0])
+    day_array.push(date_obj.wday)
+    hour_array.push(time_obj.hour)
+  end
+  max_hour = hour_array.max_by {|i| hour_array.count(i)}
+  max_day = day_array.max_by {|i| day_array.count(i)}
+  p "The most frequent time for registrations is #{max_hour}:00"
+  p "The most frequent day for registrations is the #{max_day + 1}th day of the week!"
 end
 
 puts 'EventManager initialized.'
@@ -60,14 +77,19 @@ contents = CSV.open(
 template_letter = File.read('form_letter.erb')
 erb_template = ERB.new template_letter
 
+registration_information = []
+
 contents.each do |row|
   id = row[0]
   name = row[:first_name]
   zipcode = clean_zipcode(row[:zipcode])
   phone_number = clean_phone_number(row[:homephone])
   legislators = legislators_by_zipcode(zipcode)
+  registration_information.push(clean_date_time(row[:regdate]))
 
   form_letter = erb_template.result(binding)
 
   save_thank_you_letter(id,form_letter)
 end
+
+max_registrations(registration_information)
