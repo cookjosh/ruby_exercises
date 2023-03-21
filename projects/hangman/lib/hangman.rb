@@ -23,13 +23,46 @@ def player_guess
   return user_guess
 end
 
-game_word = choose_word()
-correct_guess_array = create_holding_array(game_word)
-wrong_guess_array = []
+def save_state(game_word, correct_guess_array, wrong_guess_array, mistake_count)
+  puts "Do you want to save your game? Y or N"
+  save_answer = gets.chomp.downcase
+  if save_answer == 'y'
+    game_state = {
+      'game_word': game_word,
+      'correct_guess_array': correct_guess_array,
+      'wrong_guess_array': wrong_guess_array,
+      'mistake_count': mistake_count,
+    }
+    File.write('saved_game.txt', game_state)
+    return true
+  else
+    return false
+  end
+end
 
-mistake_count = 0
+puts 'Do you want to load your last save? Y or N: '
+load_game = gets.chomp.downcase
+if load_game == 'y'
+  load_save = eval(File.read('saved_game.txt'))
+  game_word = load_save[:game_word]
+  correct_guess_array = load_save[:correct_guess_array]
+  wrong_guess_array = load_save[:wrong_guess_array]
+  mistake_count = load_save[:mistake_count]
+else
+  File.open('saved_game.txt', 'w') {}
+  game_word = choose_word()
+  correct_guess_array = create_holding_array(game_word)
+  wrong_guess_array = []
+  mistake_count = 0
+end
+
+
 while mistake_count < 6
   puts "Word: #{game_word}"
+  save_game = save_state(game_word, correct_guess_array, wrong_guess_array, mistake_count)
+  if save_game
+    break
+  end
   guess = player_guess()
   if game_word.include? guess
     puts "Great guess! #{guess} is in the word!"

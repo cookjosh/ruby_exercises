@@ -1,0 +1,1 @@
+{:game_word=>["i", "n", "s", "t", "a", "n", "t"], :correct_guess_array=>["i", "n", "_", "t", "_", "n", "t"], :wrong_guess_array=>[], :mistake_count=>2}
