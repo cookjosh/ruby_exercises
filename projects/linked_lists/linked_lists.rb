@@ -1,15 +1,29 @@
 class LinkedList
+
   def initialize
   end
 
-  def append(value)
+  def create_node(value)
     new_node = Node.new(value)
+    return new_node
   end
 
-  def prepend(value)
+  def append(value)
+    new_node = create_node(value)
+    return new_node
+  end
+
+  def preppend(value)
     # Add code to add `@next_node` to point to next node
-    new_node = Node.new(value)
+    new_node = create_node(value)
+    ObjectSpace.each_object(Node) do |obj|
+      if obj.is_head == true
+        obj.is_head = false
+        new_node.next_node = obj.value
+      end
+    end
     new_node.is_head = true
+    return new_node
   end
 
   def size
@@ -62,12 +76,13 @@ class Node
 end
 
 new_list = LinkedList.new
-first_node = Node.new('Josh')
-second_node = Node.new('Ash')
-puts first_node.value
+first_node = new_list.append('Josh')
+second_node = new_list.preppend('Ash')
+third_node = new_list.preppend('Nolan')
 p first_node.next_node
-new_list.prepend('Nolan')
-puts new_list.head # test `head`
-puts new_list.size # test `size`
+puts "Second node is head? #{second_node.is_head}"
+puts "Second next node is: #{second_node.next_node}"
+puts "Third node is head? #{third_node.is_head}"
+puts "Third next node is: #{third_node.next_node}"
 
 
