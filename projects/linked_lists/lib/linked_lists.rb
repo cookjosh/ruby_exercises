@@ -162,6 +162,27 @@ class LinkedList
     end
     return output_str
   end
+
+  def insert_at(value, index)
+    if self.empty_list?
+      @head_node = Node.new(value)
+    else
+      current_node = @head_node
+      current_index = 0
+      while current_node.next_node != nil
+        if current_index == index
+          previous_node = current_node
+          new_node = Node.new(value)
+          previous_node.next_node = new_node
+          current_node = current_node.next_node
+          new_node.next_node = current_node
+          return new_node
+        end
+        current_index += 1
+        current_node = current_node.next_node
+      end
+    end
+  end
 end
 
 class Node
@@ -209,4 +230,15 @@ new_list.append('Joe')
 p new_list.to_s
 new_list.append('Jane')
 p new_list.to_s
+
+# Test insert_at
+p new_list.insert_at('Jim', 1)
+p first_node
+
+ObjectSpace.each_object(Node) do |obj|
+  p obj
+end
+
+p new_list.to_s
+
 
