@@ -2,4 +2,13 @@
 Info on project can be found [here](https://www.theodinproject.com/lessons/ruby-linked-lists).
 
 ### General information
-My solution relies on the [`ObjectSpace` module](https://ruby-doc.org/core-2.6.1/ObjectSpace.html) to keep track of and enumerate on individual, or the collection of, objects. I was unsure if this was the right, or fair, approach for this project but being given very vague instructions and goals, it seemed the main point was just completing the assignment goals in any way that helped me to understand linked lists.
+I was a little stuck to start on really understanding how to reference the head node to start traversing until I saw this [Medium post](https://medium.com/analytics-vidhya/implement-a-linked-list-in-ruby-2aae925acd9c) that helped. The main realizations I had were:
+- The author's `is_empty?` method helps us establish a condition and instance variable we can work against.
+- We're not necessarily initializing a Node via its own class, but rather initiaing them through `append` or `preppend` (purposefully misspelled).
+- Because of this we can initialize a head node by calling `#is_empty` and if `false`, create another instance var called `head` we can then use in conditional loops.
+
+That was a huge help and having this click helped me write out all other methods on my own!
+
+**Note** - the two things I still want to work on are:
+- Really removing all references to the object passed in `#pop`. Not having this is an issue if instantiating local variables for each Node instance, then referencing that variable. However it's not an issue if Node instances aren't referenced in code elsewhere.
+- Complete the `Extra Credit` section of the assignment on Odin Project.
