@@ -44,7 +44,6 @@ class LinkedList
       current_node = @head_node
       while current_node.next_node != nil
         count += 1
-        puts current_node.value
         current_node = current_node.next_node
       end
       return count
@@ -84,7 +83,7 @@ class LinkedList
           position += 1
           current_node.value
           current_node = current_node.next_node
-          if position == index
+          if position == self.size - 1
             return current_node.value
           end
         end
@@ -164,22 +163,54 @@ class LinkedList
   end
 
   def insert_at(value, index)
-    if self.empty_list?
-      @head_node = Node.new(value)
+    if self.empty_list? || index == 0
+      self.preppend(value)      
     else
       current_node = @head_node
-      current_index = 0
+      current_index = 1
       while current_node.next_node != nil
         if current_index == index
-          previous_node = current_node
           new_node = Node.new(value)
-          previous_node.next_node = new_node
-          current_node = current_node.next_node
-          new_node.next_node = current_node
-          return new_node
+          upcoming_node = current_node.next_node
+          current_node.next_node = new_node
+          new_node.next_node = upcoming_node
+          return
         end
         current_index += 1
         current_node = current_node.next_node
+        if current_index == self.size - 1
+          return
+        end
+      end
+    end
+  end
+
+  def remove_at(index)
+    if self.empty_list?
+      return  
+    elsif index == 0
+      removing_node = @head_node
+      new_head = removing_node.next_node
+      @head_node = new_head
+      removing_node.next_node = []
+    else
+      previous_node = @head_node
+      current_node = @head_node.next_node
+      current_index = 1
+      while current_node.next_node != nil
+        if current_index == index
+          removing_node = current_node
+          upcoming_node = current_node.next_node
+          previous_node.next_node = upcoming_node
+          return
+        end
+        current_index += 1
+        if current_index == self.size - 1
+          self.pop
+          return
+        end
+        current_node = current_node.next_node
+        previous_node = previous_node.next_node
       end
     end
   end
@@ -212,6 +243,7 @@ p new_list.size
 p new_list.at(2)
 
 # Tests `pop`
+p new_list.to_s
 new_list.pop
 p new_list.tail.value
 p first_node.next_node
@@ -230,15 +262,21 @@ new_list.append('Joe')
 p new_list.to_s
 new_list.append('Jane')
 p new_list.to_s
+p new_list.head_node
 
 # Test insert_at
-p new_list.insert_at('Jim', 1)
-p first_node
-
-ObjectSpace.each_object(Node) do |obj|
-  p obj
-end
-
+new_list.insert_at('Jim', 1)
 p new_list.to_s
-
-
+new_list.insert_at('Julie', 5)
+p new_list.to_s
+new_list.insert_at('Jared', 0)
+p new_list.to_s
+ 
+# Test remove_at
+new_list.remove_at(1)
+p new_list.to_s
+new_list.remove_at(2)
+p new_list.to_s
+new_list.remove_at(3)
+p new_list.size
+p new_list.to_s
