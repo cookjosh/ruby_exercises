@@ -9,6 +9,4 @@ I was a little stuck to start on really understanding how to reference the head 
 
 That was a huge help and having this click helped me write out all other methods on my own!
 
-**Note** - the two things I still want to work on are:
-- Really removing all references to the object passed in `#pop`. Not having this is an issue if instantiating local variables for each Node instance, then referencing that variable. However it's not an issue if Node instances aren't referenced in code elsewhere.
-- Complete the `Extra Credit` section of the assignment on Odin Project.
+**Note** - Really removing all references to the object passed in `#pop`. Not having this is an issue if instantiating local variables for each Node instance, then referencing that variable. However it's not an issue if Node instances aren't referenced in code elsewhere.
