@@ -25,21 +25,31 @@ class Tree
     else
       mid_point = (@arr.length / 2)
       @root = Node.new(@arr[mid_point])
-      current_node = @root
+      left_array = arr[0..(mid_point - 1)]
+      right_array = arr[(mid_point + 1)..(arr.length + 1)]
+      left_root = Node.new(left_array[left_array.length / 2])
+      right_root = Node.new(right_array[right_array.length / 2])
+      @root.left = left_root
+      @root.right = right_root
       @arr.each do |elem|
-        if elem == @root
+        current_node = @root
+        if elem == @arr[mid_point]
         else
           new_node = Node.new(elem)
-          if new_node.value < current_node.value
-            while current_node.left != nil
+          last_branch = false
+          while last_branch == false
+            if new_node.value < current_node.value && current_node.left != nil
               current_node = current_node.left
+            elsif new_node.value < current_node.value && current_node.left == nil
+              current_node.left = new_node
+              last_branch = true
             end
-            @root.left = new_node
-          else
-            while current_node.right != nil
+            if new_node.value > current_node.value && current_node.right != nil
               current_node = current_node.right
+            elsif new_node.value > current_node.value && current_node.right == nil
+              current_node.right = new_node
+              last_branch = true
             end
-            @root.right = new_node
           end
         end
       end
