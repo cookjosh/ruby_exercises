@@ -12,43 +12,67 @@ class Node
 end
 
 class Tree
-  attr_accessor :arr, :root
+  attr_accessor :arr, :root, :mid_point, :left_array, :right_array,
+  :left_root, :right_root
 
   def initialize(arr)
     @arr = arr.uniq.sort
+    @mid_point = (@arr.length / 2)
+    @root = Node.new(@arr[@mid_point])
+    @left_array = @arr[0..(@mid_point - 1)]
+    @right_array = @arr[(@mid_point + 1)..(@arr.length + 1)]
+    # Consider popping these form respective arrays
+    @left_root = Node.new(@left_array[@left_array.length / 2])
+    @right_root = Node.new(@right_array[@right_array.length / 2])
+    @root.left = @left_root
+    @root.right = @right_root
   end
 
   def build_tree
-    p @arr
     if @arr == nil || @arr == []
       return 'Array is empty!'
     else
-      mid_point = (@arr.length / 2)
-      @root = Node.new(@arr[mid_point])
-      left_array = arr[0..(mid_point - 1)]
-      right_array = arr[(mid_point + 1)..(arr.length + 1)]
-      left_root = Node.new(left_array[left_array.length / 2])
-      right_root = Node.new(right_array[right_array.length / 2])
-      @root.left = left_root
-      @root.right = right_root
-      @arr.each do |elem|
-        current_node = @root
-        if elem == @arr[mid_point]
+      # Left side of tree
+      @left_array.each do |elem|
+        if elem == @left_root.value
+          nil
         else
+          current_node = @left_root
           new_node = Node.new(elem)
-          last_branch = false
-          while last_branch == false
-            if new_node.value < current_node.value && current_node.left != nil
-              current_node = current_node.left
-            elsif new_node.value < current_node.value && current_node.left == nil
+          last_level = 0
+          while last_level == 0
+            if new_node.value < current_node.value && current_node.left == nil
               current_node.left = new_node
-              last_branch = true
-            end
-            if new_node.value > current_node.value && current_node.right != nil
-              current_node = current_node.right
+              last_level += 1
+            elsif new_node.value < current_node.value && current_node.left != nil
+              current_node = current_node.left
             elsif new_node.value > current_node.value && current_node.right == nil
               current_node.right = new_node
-              last_branch = true
+              last_level += 1
+            elsif new_node.value > current_node.value && current_node.right != nil
+              current_node = current_node.right
+            end
+          end
+        end
+      end
+      @right_array.each do |elem|
+        if elem == @right_root.value
+          nil
+        else
+          current_node = @right_root
+          new_node = Node.new(elem)
+          last_level = 0
+          while last_level == 0
+            if new_node.value < current_node.value && current_node.left == nil
+              current_node.left = new_node
+              last_level += 1
+            elsif new_node.value < current_node.value && current_node.left != nil              
+              current_node = current_node.left
+            elsif new_node.value > current_node.value && current_node.right == nil
+              current_node.right = new_node
+              last_level += 1
+            elsif new_node.value > current_node.value && current_node.right != nil
+              current_node = current_node.right
             end
           end
         end
