@@ -113,20 +113,57 @@ def build_tree
 
   def delete(value)
     current_node = @root
+    previous_node = current_node
     found = false
     while found == false
-      if value == current_node.value
-        if current_node.value < previous_node.value
-          previous_node.left = current_node
-        else
-          previous_node.right = current_node
+      if value == @root.left.value || value == @root.right.value
+        if value == @root.left.value
+          if @root.left.right.value > @root.left.left.value
+            @root.left.right.left = @root.left.left
+            @root.left = @root.left.right
+            found = true
+          elsif @root.left.right.value < @root.left.left.value
+            @root.left.left.right = @root.left.right
+            @root.left = @root.left.left
+            found = true
+          end
         end
-      elsif value < current_node.value
-        previous_node = current_node
-        current_node = current_node.left
-      elsif value > current_node.value
-        previous_node = current_node
-        current_node = current_node.right
+      else
+        if value == current_node.value
+          if current_node.left && current_node.right
+            if current_node.right.value > current_node.left.value
+              previous_node.left = current_node.right.value
+              current_node.right.left = current_node.left
+              found = true
+            elsif current_node.right.value < current_node.left.value
+              previous_node.left = current_node.left.value
+              current_node.left.left = current_node.right
+              found = true
+            end
+          elsif current_node.left && current_node.right != nil
+            previous_node.left = current_node.left
+            found = true
+            return
+          elsif current_node.left != nil && current_node.right
+            previous_node.right = current_node.right
+            found = true
+            return
+          else current_node.left != nil && current_node.right != nil
+            if value < previous_node.value
+              previous_node.left = nil
+              found = true
+            elsif value > previous_node.value
+              previous_node.right = nil
+              found = true
+            end
+          end
+        elsif value < current_node.value
+          previous_node = current_node
+          current_node = current_node.left
+        elsif value > current_node.value
+          previous_node = current_node
+          current_node = current_node.right
+        end
       end
     end
   end
@@ -163,7 +200,7 @@ tree.insert(11)
 tree.pretty_print
 
 # Test delete
-tree.delete(11)
+tree.delete(9)
 tree.pretty_print
 
 # Test find
