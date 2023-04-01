@@ -12,17 +12,16 @@ class Node
 end
 
 class Tree
-  attr_accessor :arr, :rootm
+  attr_accessor :array, :root
 
   def initialize(arr)
-    @arr = arr.uniq.sort
-    @root = build_tree(arr)
+    @array = arr.uniq.sort
+    @root = build_tree(@array)
   end
 
   def build_tree(arr)
-    p arr
     return nil if arr.empty?
-
+    p arr
     mid_point = (arr.size - 1) / 2
     root_node = Node.new(arr[mid_point])
 
@@ -33,6 +32,7 @@ class Tree
   end
 
 # Leaving this code from my first iteration but saw recrusion other folks were using :facepalm:
+# It does work but is not as efficient or clean...
 =begin
 def build_tree
     if @arr == nil || @arr == []
@@ -89,8 +89,62 @@ def build_tree
 
   def insert(value)
     new_node = Node.new(value)
-    
+    current_node = @root
+    last_level = false
+    while last_level == false
+      if new_node.value == current_node.value
+        return current_node
+      else
+        if new_node.value < current_node.value && current_node.left == nil
+          current_node.left = new_node
+          last_level = true
+        elsif 
+          new_node.value < current_node.value && current_node.left != nil
+          current_node = current_node.left
+        elsif new_node.value > current_node.value && current_node.right == nil
+          current_node.right = new_node
+          last_level = true
+        elsif new_node.value > current_node.value && current_node.right != nil
+          current_node = current_node.right
+        end
+      end
+    end
+  end
 
+  def delete(value)
+    current_node = @root
+    found = false
+    while found == false
+      if value == current_node.value
+        if current_node.value < previous_node.value
+          previous_node.left = current_node
+        else
+          previous_node.right = current_node
+        end
+      elsif value < current_node.value
+        previous_node = current_node
+        current_node = current_node.left
+      elsif value > current_node.value
+        previous_node = current_node
+        current_node = current_node.right
+      end
+    end
+  end
+
+  def find(value)
+    current_node = @root
+    found = false
+    while found == false
+      if value == @root.value
+        return @root
+      elsif value == current_node.value
+        return current_node
+      elsif value < current_node.value
+        current_node = current_node.left
+      elsif value > current_node.value
+        current_node = current_node.right
+      end
+    end
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
@@ -102,5 +156,16 @@ end
 
 tree = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
 
-tree.build_tree(tree.arr)
 tree.pretty_print
+
+# Test insert
+tree.insert(11)
+tree.pretty_print
+
+# Test delete
+tree.delete(11)
+tree.pretty_print
+
+# Test find
+p tree.find(9)
+
