@@ -12,23 +12,29 @@ class Node
 end
 
 class Tree
-  attr_accessor :arr, :root, :mid_point, :left_array, :right_array,
-  :left_root, :right_root
+  attr_accessor :arr, :rootm
 
   def initialize(arr)
     @arr = arr.uniq.sort
-    @mid_point = (@arr.length / 2)
-    @root = Node.new(@arr[@mid_point])
-    @left_array = @arr[0..(@mid_point - 1)]
-    @right_array = @arr[(@mid_point + 1)..(@arr.length + 1)]
-    # Consider popping these form respective arrays
-    @left_root = Node.new(@left_array[@left_array.length / 2])
-    @right_root = Node.new(@right_array[@right_array.length / 2])
-    @root.left = @left_root
-    @root.right = @right_root
+    @root = build_tree(arr)
   end
 
-  def build_tree
+  def build_tree(arr)
+    p arr
+    return nil if arr.empty?
+
+    mid_point = (arr.size - 1) / 2
+    root_node = Node.new(arr[mid_point])
+
+    root_node.left = build_tree(arr[0...mid_point])
+    root_node.right = build_tree(arr[(mid_point + 1)..-1])
+
+    root_node
+  end
+
+# Leaving this code from my first iteration but saw recrusion other folks were using :facepalm:
+=begin
+def build_tree
     if @arr == nil || @arr == []
       return 'Array is empty!'
     else
@@ -79,6 +85,13 @@ class Tree
       end
     end
   end
+=end
+
+  def insert(value)
+    new_node = Node.new(value)
+    
+
+  end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
@@ -88,5 +101,6 @@ class Tree
 end
 
 tree = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
-tree.build_tree
+
+tree.build_tree(tree.arr)
 tree.pretty_print
