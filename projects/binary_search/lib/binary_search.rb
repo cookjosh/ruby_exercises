@@ -127,6 +127,16 @@ def build_tree
             @root.left = @root.left.left
             found = true
           end
+          elsif value == @root.right.value
+          if @root.right.right.value > @root.right.left.value
+            @root.right.right.left = @root.right.left
+            @root.right = @root.right.right
+            found = true
+          elsif @root.right.right.value < @root.right.left.value
+            @root.right.left.right = @root.right.right
+            @root.right = @root.right.left
+            found = true
+          end
         end
       else
         if value == current_node.value
@@ -140,15 +150,21 @@ def build_tree
               current_node.left.left = current_node.right
               found = true
             end
-          elsif current_node.left && current_node.right != nil
-            previous_node.left = current_node.left
+          elsif current_node.left && current_node.right == nil
+            if value == previous_node.left.value
+              previous_node.left = current_node.right
+            elsif value == previous_node.right.value
+              previous_node.right = current_node.right
+            end
             found = true
-            return
-          elsif current_node.left != nil && current_node.right
-            previous_node.right = current_node.right
+          elsif current_node.left == nil && current_node.right
+            if value == previous_node.left.value
+              previous_node.left = current_node.right
+            elsif value == previous_node.right.value
+              previous_node.right = current_node.right
+            end
             found = true
-            return
-          else current_node.left != nil && current_node.right != nil
+          else current_node.left == nil && current_node.right == nil
             if value < previous_node.value
               previous_node.left = nil
               found = true
@@ -204,5 +220,5 @@ tree.delete(9)
 tree.pretty_print
 
 # Test find
-p tree.find(9)
+p tree.find(3)
 
