@@ -200,6 +200,28 @@ def build_tree
     end
   end
 
+  def level_order(current_node = @root, holding_array = [], final_array = [], &block)
+    current_node = @root
+    done = false
+    while done == false
+      final_array << current_node
+      if current_node.left && current_node.right
+        holding_array << current_node.left
+        holding_array << current_node.right
+      elsif current_node.left && current_node.right == nil
+        holding_array << current_node.left
+      elsif current_node.right && current_node.left == nil
+        holding_array << current_node.right
+      end
+      if holding_array[0]
+        current_node = holding_array.shift
+      else
+        done = true
+      end
+    end
+    return final_array
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.value}"
@@ -221,4 +243,9 @@ tree.pretty_print
 
 # Test find
 p tree.find(3)
+
+# Test level_order
+p tree.level_order {|elem| elem * 2}
+
+
 
