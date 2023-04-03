@@ -21,7 +21,7 @@ class Tree
 
   def build_tree(arr)
     return nil if arr.empty?
-    p arr
+
     mid_point = (arr.size - 1) / 2
     root_node = Node.new(arr[mid_point])
 
@@ -204,6 +204,9 @@ def build_tree
     current_node = @root
     done = false
     while done == false
+      if block_given?  
+        yield current_node
+      end
       final_array << current_node
       if current_node.left && current_node.right
         holding_array << current_node.left
@@ -220,6 +223,56 @@ def build_tree
       end
     end
     return final_array
+  end
+
+  # Got inspiration for inorder from solution from another Odin Project student
+  def inorder(node = @root)
+    # Left Root Right
+    return if node.nil?
+
+    inorder(node.left)
+    print "#{node.value} "
+    inorder(node.right)
+  end
+
+  def preorder(node = @root)
+    if node.nil?
+      return
+    else
+      print "#{node.value} "
+      preorder(node.left)
+    end
+    preorder(node.right)
+  end
+
+  def postorder(node = @root)
+    if node.nil?
+      return
+    else
+      postorder(node.left)
+      postorder(node.right)
+      print "#{node.value} "
+    end
+  end
+
+  def height(value)
+  end
+
+  def depth(node = @root, value)
+    node = @root
+    distance = -1
+    if value == @root.value
+      return distance + 1
+    end
+    distance = depth(node.left, value)
+    if distance >= 0
+      return distance + 1
+    end
+    distance = depth(node.right, value)
+    if distance >= 0
+      return distance + 1
+    end
+    return distance
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
@@ -245,7 +298,27 @@ tree.pretty_print
 p tree.find(3)
 
 # Test level_order
-p tree.level_order {|elem| elem * 2}
+# tests presence and absence of given block
+tree.level_order {|node| puts node}
+p tree.level_order
 
+
+# Array taken from here for quick testing:
+# https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/
+tree = Tree.new([4, 10, 12, 15, 18, 22, 24, 25, 31, 35, 44, 50, 66, 70, 90])
+tree.pretty_print
+# Test inorder
+tree.inorder
+
+# Test preorder
+tree.preorder
+
+# Test postorder
+tree.postorder
+
+# Test height
+
+# Test depth
+p tree.depth(15)
 
 
