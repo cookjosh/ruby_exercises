@@ -231,7 +231,7 @@ def build_tree
     return if node.nil?
 
     inorder(node.left)
-    print "#{node.value} "
+    return node.value
     inorder(node.right)
   end
 
@@ -256,8 +256,23 @@ def build_tree
   end
 
   def height(value)
+    current_node = find(value)
+    left_array = []
+    right_array = []
+    height_counter_left = 0
+    height_counter_right = 0
+    if current_node.left
+      left_array.push(inorder(current_node.left))
+      height_counter_left += 1
+    end
+    if current_node.right
+      right_array.push(inorder(current_node.right))
+      height_counter_right += 1
+    end
+    p left_array
+    p right_array
   end
-
+=begin
   def depth(node = @root, value)
     node = @root
     distance = -1
@@ -274,7 +289,7 @@ def build_tree
     end
     return distance
   end
-
+=end
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.value}"
@@ -317,8 +332,9 @@ tree.preorder
 tree.postorder
 
 # Test height
-
+tree.pretty_print
+p tree.height(15)
 # Test depth
-p tree.depth(15)
+#p tree.depth(15)
 
 
