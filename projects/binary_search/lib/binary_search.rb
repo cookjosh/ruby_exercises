@@ -225,13 +225,13 @@ def build_tree
     return final_array
   end
 
-  # Got inspiration for inorder from solution from another Odin Project student
+  # Got inspiration for next few methods from solution from another Odin Project student
   def inorder(node = @root)
     # Left Root Right
     return if node.nil?
 
     inorder(node.left)
-    return node.value
+    print "#{node.value} "
     inorder(node.right)
   end
 
@@ -255,41 +255,48 @@ def build_tree
     end
   end
 
-  def height(value)
-    current_node = find(value)
-    left_array = []
-    right_array = []
-    height_counter_left = 0
-    height_counter_right = 0
-    if current_node.left
-      left_array.push(inorder(current_node.left))
-      height_counter_left += 1
+  # Next two are also from another student, and I'm generally unsure how they work
+  # I don't understand how in #height, `.max + 1` works on the final array...
+  def height(node = @root) 
+    unless node.nil? || node == root
+      node = (node.instance_of?(Node) ? find(node.value) : find(node))
     end
-    if current_node.right
-      right_array.push(inorder(current_node.right))
-      height_counter_right += 1
+    
+    if node.nil?
+      return -1
     end
-    p left_array
-    p right_array
+    
+    [height(node.left), height(node.right)].max + 1
   end
-=begin
-  def depth(node = @root, value)
-    node = @root
-    distance = -1
-    if value == @root.value
-      return distance + 1
+
+  def depth(node = root, parent = root, edges = 0)
+    return 0 if node == parent
+    return -1 if parent.nil?
+
+    if node < parent.value
+      edges += 1
+      depth(node, parent.left, edges)
+    elsif node > parent.value
+      edges += 1
+      depth(node, parent.right, edges)
+    else
+      edges
     end
-    distance = depth(node.left, value)
-    if distance >= 0
-      return distance + 1
-    end
-    distance = depth(node.right, value)
-    if distance >= 0
-      return distance + 1
-    end
-    return distance
   end
-=end
+
+  def balanced?(node = @root)    
+    if node.nil?
+      return true
+    end
+
+    left_height = height(node.left)
+    right_height = height(node.right)
+
+    return true if (left_height - right_height).abs <= 1 && balanced?(node.left) && balanced?(node.right)
+
+    false
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.value}"
@@ -324,17 +331,21 @@ tree = Tree.new([4, 10, 12, 15, 18, 22, 24, 25, 31, 35, 44, 50, 66, 70, 90])
 tree.pretty_print
 # Test inorder
 tree.inorder
-
+puts ""
 # Test preorder
 tree.preorder
-
+puts ""
 # Test postorder
 tree.postorder
-
+puts ""
 # Test height
 tree.pretty_print
 p tree.height(15)
+
 # Test depth
-#p tree.depth(15)
+p tree.depth(4)
+
+# Test balanced?
+p tree.balanced?
 
 
