@@ -18,69 +18,116 @@ class GameBoard
   end
 
   def build_graph(game_board)
-    game_board.each do |elem|
-      if game_board.include? [(elem[0] + 2), (elem[1] + 1)]
-        puts "#{elem} -> #{[(elem[0] + 2), (elem[1] + 1)]}"
-      end
-    end
-  end
+
+    new_board = []
+    # Comment examples based on space 4, 4
+    game_board.each_with_index do |elem, index|
+      connection_array = []
       
+      if game_board.include? [elem[0] + 2, elem[1] + 1] #north_east_move_one
+        connection_array << [elem[0] + 2, elem[1] + 1] #6, 5
+      end
+      if game_board.include? [elem[0] + 1, elem[1] + 2] #north_east_move_two
+        connection_array << [elem[0] + 1, elem[1] + 2] #5, 6
+      end
+      if game_board.include? [elem[0] + 2, elem[1] - 1] #north_west_move_one
+        connection_array << [elem[0] + 2, elem[1] - 1] #6, 3
+      end
+      if game_board.include? [elem[0] + 1, elem[1] - 2] #north_west_move_two
+        connection_array << [elem[0] + 1, elem[1] - 2] #5, 2
+      end
+      if game_board.include? [elem[0] - 2, elem[1] + 1] #south_east_move_one
+        connection_array << [elem[0] - 2, elem[1] + 1] #2, 5
+      end
+      if game_board.include? [elem[0] - 1, elem[1] + 2] #south_east_move_two
+        connection_array << [elem[0] - 1, elem[1] + 2] #3, 6
+      end
+      if game_board.include? [elem[0] - 2, elem[1] - 1] #south_west_move_two
+        connection_array << [elem[0] - 2, elem[1] - 1] #2, 3
+      end
+      if game_board.include? [elem[0] - 1, elem[1] - 2] #south_west_move_two
+        connection_array << [elem[0] - 1, elem[1] - 2] #3, 2
+      end
+      new_board << [elem, connection_array]
+    end
+
+    return new_board
+  end
 end
 
 class Knight
-  # Notes - possibly build this recursively taking each move one at a time then constructing next possible moves
-  # Do this until one of the "next moves" eq the end_point
-  def knight_moves(start_point = 0, end_point = 0, game_board = nil)
-    # Separting possible moves into quadrants, if [0] is "up" (north) or "down" (south)
-    # and [1] is "left" (west) or "right" (east)
-    north_east_move_one = [start_point[0] + 2, start_point[1] + 1] 
-    north_east_move_two = [start_point[0] + 1, start_point[1] + 2]
 
-    north_west_move_one = [start_point[0] + 2, start_point[1] - 1] 
-    north_west_move_two = [start_point[0] + 1, start_point[1] - 2]
+  def initialize
+    @counter_array = []
+    @holding_array = []
+    @visited_squares_array = []
+  end
+  
+  def knight_moves(start_point = nil, end_point = nil, board = nil, counter = 1)
 
-    south_east_move_one = [start_point[0] - 2, start_point[1] + 1] 
-    south_east_move_two = [start_point[0] - 1, start_point[1] + 2]
-
-    south_west_move_one = [start_point[0] - 2, start_point[1] - 1] 
-    south_west_move_two = [start_point[0] - 1, start_point[1] - 2]
-
-    moves_array = [north_east_move_one, north_east_move_two, 
-      north_west_move_one, north_west_move_two, 
-      south_east_move_one, south_east_move_two, 
-      south_west_move_one, south_west_move_two]
-
-    # Hopefully by checking if the board includes the next possible move, we can avoid "off-board" moves
-    # Later - possibly build in a check if the start_point is "less or greater than" the end_point
-    # depending on that, we can decide which conditional direction we'd want to check instead of
-    # checking each one.
-    moves_array.each do |move|
-      if move == end_point
-        puts "Move: #{start_point} -> #{end_point}"
-        return
+    board.each do |elem|
+      if elem[0] == start_point
+        start_point = elem
       end
     end
-=begin
-    elsif game_board.include? north_east_move_one
-      puts "Legal move #{start_point} -> #{north_east_move_one}"
-    elsif game_board.include? north_east_move_two
-      puts "Legal move #{start_point} -> #{north_east_move_two}"
-    else game_board.include? [start_point[0] - 2, start_point[1] - 1] || game_board.include? [start_point[0] - 1, start_point[1] - 2]
-      puts "Legal move #{start_point} -> #{[start_point[0] + 2, start_point[1] + 1]}"
+
+    p start_point
+
+    if @visited_squares_array.include? start_point[0]
+
+    elsif start_point[0] == end_point
+      return "Done!"
+    else
+      @visited_squares_array << start_point.shift
+      start_point = start_point[0]
+      p start_point
+      start_point.each do |elem|
+        if elem == end_point
+          return "Done! #{start_point[0]} -> #{elem}"
+        else
+          @holding_array << elem
+        end
+      end
     end
-=end
+
+    @holding_array.each do |elem|
+      knight_moves(elem, end_point, board)
+    end
+      
   end
+
 end
 
-game_board = []
-
-(0..7).each do |elem|
-  (0..7).each do |next_elem|
-    game_board << [elem, next_elem]
-  end
-end
 
 new_game = GameBoard.new
 new_knight = Knight.new
 board = new_game.create_board
-new_knight.knight_moves([0,0], [2,1], board)
+graph = new_game.build_graph(board)
+p new_knight.knight_moves([1, 1], [5, 3], graph)
+
+=begin
+game_board = [[[1, 1], [[3, 2], [2, 3]]], [[1, 2], [[3, 3], [2, 4], [3, 1]]], [[1, 3], [[3, 4], [2, 5], [3, 2], [2, 1]]], 
+[[1, 4], [[3, 5], [2, 6], [3, 3], [2, 2]]], [[1, 5], [[3, 6], [2, 7], [3, 4], [2, 3]]], [[1, 6], [[3, 7], [2, 8], [3, 5], [2, 4]]], 
+[[1, 7], [[3, 8], [3, 6], [2, 5]]], [[1, 8], [[3, 7], [2, 6]]], [[2, 1], [[4, 2], [3, 3], [1, 3]]], [[2, 2], [[4, 3], [3, 4], [4, 1], [1, 4]]], 
+[[2, 3], [[4, 4], [3, 5], [4, 2], [3, 1], [1, 5], [1, 1]]], [[2, 4], [[4, 5], [3, 6], [4, 3], [3, 2], [1, 6], [1, 2]]], 
+[[2, 5], [[4, 6], [3, 7], [4, 4], [3, 3], [1, 7], [1, 3]]], [[2, 6], [[4, 7], [3, 8], [4, 5], [3, 4], [1, 8], [1, 4]]], [[2, 7], [[4, 8], [4, 6], [3, 5], [1, 5]]], 
+[[2, 8], [[4, 7], [3, 6], [1, 6]]], [[3, 1], [[5, 2], [4, 3], [1, 2], [2, 3]]], [[3, 2], [[5, 3], [4, 4], [5, 1], [1, 3], [2, 4], [1, 1]]], 
+[[3, 3], [[5, 4], [4, 5], [5, 2], [4, 1], [1, 4], [2, 5], [1, 2], [2, 1]]], [[3, 4], [[5, 5], [4, 6], [5, 3], [4, 2], [1, 5], [2, 6], [1, 3], [2, 2]]], 
+[[3, 5], [[5, 6], [4, 7], [5, 4], [4, 3], [1, 6], [2, 7], [1, 4], [2, 3]]], [[3, 6], [[5, 7], [4, 8], [5, 5], [4, 4], [1, 7], [2, 8], [1, 5], [2, 4]]], 
+[[3, 7], [[5, 8], [5, 6], [4, 5], [1, 8], [1, 6], [2, 5]]], [[3, 8], [[5, 7], [4, 6], [1, 7], [2, 6]]], [[4, 1], [[6, 2], [5, 3], [2, 2], [3, 3]]], 
+[[4, 2], [[6, 3], [5, 4], [6, 1], [2, 3], [3, 4], [2, 1]]], [[4, 3], [[6, 4], [5, 5], [6, 2], [5, 1], [2, 4], [3, 5], [2, 2], [3, 1]]], 
+[[4, 4], [[6, 5], [5, 6], [6, 3], [5, 2], [2, 5], [3, 6], [2, 3], [3, 2]]], [[4, 5], [[6, 6], [5, 7], [6, 4], [5, 3], [2, 6], [3, 7], [2, 4], [3, 3]]], 
+[[4, 6], [[6, 7], [5, 8], [6, 5], [5, 4], [2, 7], [3, 8], [2, 5], [3, 4]]], [[4, 7], [[6, 8], [6, 6], [5, 5], [2, 8], [2, 6], [3, 5]]], [[4, 8], [[6, 7], [5, 6], [2, 7], [3, 6]]], 
+[[5, 1], [[7, 2], [6, 3], [3, 2], [4, 3]]], [[5, 2], [[7, 3], [6, 4], [7, 1], [3, 3], [4, 4], [3, 1]]], [[5, 3], [[7, 4], [6, 5], [7, 2], [6, 1], [3, 4], [4, 5], [3, 2], [4, 1]]], 
+[[5, 4], [[7, 5], [6, 6], [7, 3], [6, 2], [3, 5], [4, 6], [3, 3], [4, 2]]], [[5, 5], [[7, 6], [6, 7], [7, 4], [6, 3], [3, 6], [4, 7], [3, 4], [4, 3]]], 
+[[5, 6], [[7, 7], [6, 8], [7, 5], [6, 4], [3, 7], [4, 8], [3, 5], [4, 4]]], [[5, 7], [[7, 8], [7, 6], [6, 5], [3, 8], [3, 6], [4, 5]]], [[5, 8], 
+[[7, 7], [6, 6], [3, 7], [4, 6]]], [[6, 1], [[8, 2], [7, 3], [4, 2], [5, 3]]], [[6, 2], [[8, 3], [7, 4], [8, 1], [4, 3], [5, 4], [4, 1]]], 
+[[6, 3], [[8, 4], [7, 5], [8, 2], [7, 1], [4, 4], [5, 5], [4, 2], [5, 1]]], [[6, 4], [[8, 5], [7, 6], [8, 3], [7, 2], [4, 5], [5, 6], [4, 3], [5, 2]]], 
+[[6, 5], [[8, 6], [7, 7], [8, 4], [7, 3], [4, 6], [5, 7], [4, 4], [5, 3]]], [[6, 6], [[8, 7], [7, 8], [8, 5], [7, 4], [4, 7], [5, 8], [4, 5], [5, 4]]], 
+[[6, 7], [[8, 8], [8, 6], [7, 5], [4, 8], [4, 6], [5, 5]]], [[6, 8], [[8, 7], [7, 6], [4, 7], [5, 6]]], [[7, 1], [[8, 3], [5, 2], [6, 3]]], 
+[[7, 2], [[8, 4], [5, 3], [6, 4], [5, 1]]], [[7, 3], [[8, 5], [8, 1], [5, 4], [6, 5], [5, 2], [6, 1]]], [[7, 4], [[8, 6], [8, 2], [5, 5], [6, 6], [5, 3], [6, 2]]], 
+[[7, 5], [[8, 7], [8, 3], [5, 6], [6, 7], [5, 4], [6, 3]]], [[7, 6], [[8, 8], [8, 4], [5, 7], [6, 8], [5, 5], [6, 4]]], [[7, 7], [[8, 5], [5, 8], [5, 6], [6, 5]]], 
+[[7, 8], [[8, 6], [5, 7], [6, 6]]], [[8, 1], [[6, 2], [7, 3]]], [[8, 2], [[6, 3], [7, 4], [6, 1]]], [[8, 3], [[6, 4], [7, 5], [6, 2], [7, 1]]], [[8, 4], 
+[[6, 5], [7, 6], [6, 3], [7, 2]]], [[8, 5], [[6, 6], [7, 7], [6, 4], [7, 3]]], [[8, 6], [[6, 7], [7, 8], [6, 5], [7, 4]]], [[8, 7], [[6, 8], [6, 6], [7, 5]]], 
+[[8, 8], [[6, 7], [7, 6]]]]
+=end
