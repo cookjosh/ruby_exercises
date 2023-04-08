@@ -1,3 +1,5 @@
+# Class definitions for classes related to the chessboard structure
+
 class GameBoard
   attr_accessor :game_board,
 
@@ -69,92 +71,9 @@ class Square
 end
 
 
-class Knight
-  attr_accessor :queue_array, :visited_squares_array
-
-  def initialize
-    @queue_array = []
-    @visited_squares_array = []
-    @final_array = []
-  end
-  
-  def knight_moves(current_point = nil, end_point = nil, board = nil, counter = 0)
-
-    board.each do |elem|
-      if elem[0] == current_point
-        current_point = elem
-      end
-    end
-
-    current_point = Square.new(current_point)
-
-    @queue_array << current_point
-
-    reached_end = false
-
-    while reached_end == false
-      
-      if @visited_squares_array.include? @queue_array[0]
-        @queue_array.shift
-
-      elsif @queue_array[0].spot == end_point
-        
-        current_point = @queue_array[0]
-        previous_point = current_point.parent
-
-        while current_point.parent != nil
-          @visited_squares_array.each do |elem|
-            if elem.spot == previous_point
-              previous_point = elem
-            end
-          end
-          
-          @final_array << current_point.spot
-          counter += 1
-          current_point = previous_point
-          previous_point = current_point.parent
-        end
-        
-        @final_array << (@visited_squares_array[0].spot)
-        puts "You made it in #{counter} moves!"
-        @final_array.reverse_each {|elem| p elem}
-        reached_end = true
-
-      else
-        current_point.children.each do |child|
-          board.each do |elem|
-            if elem[0] == child
-              child = elem
-            end
-          end
-    
-          child = Square.new(child)
-          child.parent = current_point.spot
-          if @visited_squares_array.any? {|elem| elem.spot == child.spot}
-            nil
-          else
-            @queue_array << child
-          end
-        end
-        
-        @visited_squares_array << @queue_array[0]
-        @queue_array.shift
-        current_point = @queue_array[0]
-      end
-    end
-  end
-
-end
-
-
-new_game = GameBoard.new
-new_knight = Knight.new
-board = new_game.create_board
-graph = new_game.build_graph(board)
-new_knight.knight_moves(board.sample, board.sample, graph)
-
+# Below is an example of what a final created graph of individual square dependencies looks like
 =begin
-game_board = [[[1, 1], [[3, 2], [2, 3]]], [[1, 2], [[3, 3], [2, 4], [3, 1]]], [[1, 3], [[3, 4], [2, 5], [3, 2], [2, 1]]], 
+  game_board = [[[1, 1], [[3, 2], [2, 3]]], [[1, 2], [[3, 3], [2, 4], [3, 1]]], [[1, 3], [[3, 4], [2, 5], [3, 2], [2, 1]]], 
 [[1, 4], [[3, 5], [2, 6], [3, 3], [2, 2]]], [[1, 5], [[3, 6], [2, 7], [3, 4], [2, 3]]], [[1, 6], [[3, 7], [2, 8], [3, 5], [2, 4]]], 
 [[1, 7], [[3, 8], [3, 6], [2, 5]]], [[1, 8], [[3, 7], [2, 6]]], [[2, 1], [[4, 2], [3, 3], [1, 3]]], [[2, 2], [[4, 3], [3, 4], [4, 1], [1, 4]]], 
 [[2, 3], [[4, 4], [3, 5], [4, 2], [3, 1], [1, 5], [1, 1]]], [[2, 4], [[4, 5], [3, 6], [4, 3], [3, 2], [1, 6], [1, 2]]], 
