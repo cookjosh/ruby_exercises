@@ -123,7 +123,7 @@ class Game
   end
 end
 
-board = GameBoard.new
-game = Game.new(board)
-game.play_game
+#board = GameBoard.new
+#game = Game.new(board)
+#game.play_game
 
